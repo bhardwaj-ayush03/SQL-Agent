@@ -1,5 +1,3 @@
-# app/graph/nodes/sql_generator.py
-
 GENERATE_PROMPT = """Write a single DuckDB SQL query to answer the question below.
 
 Only use these tables and columns, nothing else:

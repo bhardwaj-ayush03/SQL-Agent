@@ -1,5 +1,3 @@
-# app/graph/nodes/validator.py
-
 import re
 import sqlparse
 
