@@ -1,0 +1,13 @@
+pydantic
+pydantic-settings
+langchain-openai
+langchain-groq
+duckdb
+langgraph
+fastapi
+uvicorn
+streamlit
+plotly
+sqlparse
+faiss-cpu
+sentence-transformers

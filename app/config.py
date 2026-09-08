@@ -1,7 +1,3 @@
-"""
-Central configuration for the SQL Agent.
-All secrets/config pulled from environment variables (.env file locally).
-"""
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 from dotenv import load_dotenv
