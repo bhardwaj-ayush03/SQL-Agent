@@ -65,7 +65,17 @@ def display_assistant_turn(result):
 
         chart_spec = result.get("chart_spec")
         if chart_spec:
-            fig = go.Figure(data=go.Bar(x=chart_spec["x"], y=chart_spec["y"]))
+            if chart_spec["type"] == "scatter":
+                fig = go.Figure(data=go.Scatter(
+                    x=chart_spec["x"], y=chart_spec["y"], mode="markers",
+                ))
+            elif chart_spec["type"] == "line":
+                fig = go.Figure(data=go.Scatter(
+                    x=chart_spec["x"], y=chart_spec["y"], mode="lines+markers",
+                ))
+            else:
+                fig = go.Figure(data=go.Bar(x=chart_spec["x"], y=chart_spec["y"]))
+
             fig.update_layout(xaxis_title=chart_spec["x_label"], yaxis_title=chart_spec["y_label"])
             st.plotly_chart(fig, use_container_width=True)
 
