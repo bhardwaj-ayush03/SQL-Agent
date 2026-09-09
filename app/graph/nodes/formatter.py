@@ -8,7 +8,8 @@ Result columns: {columns}
 Result rows: {rows}
 
 Give a plain, direct answer using the actual numbers from the result. Don't add any information
-that isn't in the result.
+that isn't in the result. If there is more than one row, list each one on its own line, don't
+run them together in one sentence.
 """
 
 

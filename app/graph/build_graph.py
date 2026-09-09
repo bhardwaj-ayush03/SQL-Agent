@@ -12,12 +12,17 @@ from app.graph.nodes.sql_generator import sql_generator_node
 from app.graph.nodes.validator import validator_node
 from app.graph.nodes.executor import executor_node
 from app.graph.nodes.formatter import formatter_node
+from app.graph.nodes.intent_guard import intent_guard_node
 
 
 def give_up_node(state):
     message = "I couldn't generate a working query for this after a few attempts. Could you try rephrasing the question?"
     return {**state, "final_answer": message, "chart_spec": None}
 
+def route_after_intent_guard(state):
+    if state["is_write_request"]:
+        return "end"
+    return "ambiguity_check"
 
 def route_after_validator(state):
     if state["is_valid_sql"]:
@@ -43,6 +48,7 @@ def build_graph(db, llm, store):
     graph.add_node("retrieval", partial(retrieval_node, store=store))
     graph.add_node("ambiguity_check", partial(ambiguity_check_node, llm=llm))
     graph.add_node("sql_generator", partial(sql_generator_node, llm=llm))
+    
 
     def run_validator(state):
         known_columns = [(c["table"], c["column"]) for c in state["column_cards"]]
@@ -52,11 +58,17 @@ def build_graph(db, llm, store):
     graph.add_node("executor", partial(executor_node, db=db))
     graph.add_node("formatter", partial(formatter_node, llm=llm))
     graph.add_node("give_up", give_up_node)
+    graph.add_node("intent_guard", intent_guard_node)
 
     graph.add_edge(START, "ingestion")
     graph.add_edge("ingestion", "profiling")
     graph.add_edge("profiling", "retrieval")
-    graph.add_edge("retrieval", "ambiguity_check")
+    graph.add_edge("retrieval", "intent_guard")
+    
+    graph.add_conditional_edges("intent_guard", route_after_intent_guard, {
+    "end": END,
+    "ambiguity_check": "ambiguity_check",
+})
     graph.add_edge("ambiguity_check", "sql_generator")
     graph.add_edge("sql_generator", "validator")
 

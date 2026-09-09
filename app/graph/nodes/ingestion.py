@@ -22,7 +22,13 @@ def ingestion_node(state: AgentState, db: DuckDBManager) -> AgentState:
     tables = []
     existing_names: set[str] = set(db.registry.names())
 
+    path_to_table = {path: name for name, path in db.registry.tables.items()}
+
     for csv_path in state["csv_paths"]:
+        if csv_path in path_to_table:
+            tables.append(path_to_table[csv_path])
+            continue
+
         table_name = sanitize_table_name(csv_path, existing_names)
         db.load_csv(csv_path, table_name)
         existing_names.add(table_name)

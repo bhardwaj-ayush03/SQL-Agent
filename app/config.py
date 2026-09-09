@@ -8,7 +8,7 @@ class Settings(BaseSettings):
 
     # --- LLM providers ---
     groq_api_key: str = os.getenv('GROQ_API_KEY')
-    groq_model: str = "llama-3.3-70b-versatile"
+    groq_model: str = "openai/gpt-oss-120b"
 
     openrouter_api_key: str = os.getenv('OPEN_ROUTER')
     openrouter_model: str = "meta-llama/llama-3.3-70b-instruct:free"
